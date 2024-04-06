@@ -4,15 +4,6 @@ from time import time
 from pprint import pprint as print
 from datetime import datetime, timedelta
 
-
-def decorator(func):
-    def handler(*argd,**kvargs):
-        try:
-            return func(*argd,**kvargs)
-        except Exception as e:
-            print(f"{e}")
-    return handler()
-
 async def main(user_input):
     corrutine_url = await create_url(user_input)
     print(corrutine_url)
