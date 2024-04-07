@@ -1,27 +1,23 @@
-import aiohttp
 import asyncio
+import aiohttp
 from time import time
 from pprint import pprint as print
 from datetime import datetime, timedelta
 
 async def main(user_input):
     corrutine_url = await create_url(user_input)
-    print(corrutine_url)
-
-    resultat_list = []
 
     for worker in asyncio.as_completed(corrutine_url):
         resultat = await worker
-        resultat_list.append(resultat)
 
 async def http_parser(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             result = await response.json()
-            await parser_PB_in_sesion(result, ["EUR","USD"])
-            return result
+            await parser_PB_in_session(result, ["EUR","USD"])
 
-async def parser_PB_in_sesion(data, currency):
+
+async def parser_PB_in_session(data, currency):
     date_json = data["date"]
     currency_list = []
     for i in data["exchangeRate"]:
