@@ -1,3 +1,4 @@
+import sys
 import asyncio
 import aiohttp
 from time import time
@@ -6,12 +7,15 @@ from datetime import datetime, timedelta
 
 async def main(user_input):
     corrutine_url = await create_url(user_input)
-
-    for worker in asyncio.as_completed(corrutine_url):
-        resultat = await worker
+    try:
+        for worker in asyncio.as_completed(corrutine_url):
+            resultat = await worker
+    except Exception as e:
+        print(f"{e}")
 
 async def http_parser(url):
     async with aiohttp.ClientSession() as session:
+        print("Establishing a connection")
         async with session.get(url) as response:
             result = await response.json()
             await parser_PB_in_session(result, ["EUR","USD"])
@@ -44,10 +48,20 @@ async def create_url(user_input):
         url_list.append(http_parser(url_date))
     return url_list
 
-if __name__ == "__main__":
+def start():
     timer = time()
+    if len(sys.argv) != 2:
+        print("Not enough parameters")
+    else:
+        if int(sys.argv[1]) <= 10:
+            target_count = sys.argv[1]
+            r = asyncio.run(main(int(target_count)))
+        else:
+            print("Number of days should not exceed 10")
     
-    user_input = int(input(">>>"))
-    r = asyncio.run(main(user_input))
-
     print(f"Execution time: {time()- timer}")
+
+
+if __name__ == "__main__":
+    start()
+
